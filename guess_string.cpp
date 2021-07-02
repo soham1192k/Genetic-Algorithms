@@ -4,16 +4,16 @@
 using namespace std;
 struct Member{
     string DNA;
-    int fitness;
+    int deviation;
 };
 struct Population{
     vector<Member>Members=vector<Member>(50000);
 };
 bool cmp(Member &a,Member &b){
-    return a.fitness>b.fitness;
+    return a.deviation<b.deviation;
 }
 int main(){
-    string DNA="ewohtp79 9yr98q4ygt 89pq4y 9p8qt g";
+    string DNA="urhuwhthowhtuigwbeirbuotnwoierngn";
     bool done=false;
     int MutationRate=25;
     srand(time(NULL));
@@ -23,19 +23,17 @@ int main(){
         for(int j=0;j<DNA.size();j++){
             Pop.Members[i].DNA[j]=(unsigned char)rand()%96+32;
         }
-        Pop.Members[i].fitness=0;
+        Pop.Members[i].deviation=0;
     }
     int Generation=0;
     while(!done){
         Generation++;
         for(int i=0;i<Pop.Members.size();i++){
-            Pop.Members[i].fitness=0;
+            Pop.Members[i].deviation=0;
             for(int j=0;j<Pop.Members[i].DNA.size();j++){
-                if(Pop.Members[i].DNA[j]==DNA[j]){
-                    Pop.Members[i].fitness+=10;
-                }
+                Pop.Members[i].deviation+=abs(Pop.Members[i].DNA[j]-DNA[j]);
             }
-            if(Pop.Members[i].DNA==DNA) done=true;
+            if(Pop.Members[i].deviation==0) done=true;
         }
         sort(Pop.Members.begin(),Pop.Members.end(),cmp);
         vector<Member>Parents;
@@ -50,7 +48,7 @@ int main(){
                 }
             }
         }
-        cout<<"Generation: "<<Generation<<", Highest Fitness: "<<Parents[0].fitness<<", With Sequence: "<<Parents[0].DNA<<'\n';
+        cout<<"Generation: "<<Generation<<", Smallest deviation: "<<Parents[0].deviation<<", With Sequence: "<<Parents[0].DNA<<'\n';
         Sleep(2000);
     }
     cout<<"Evolved!!\n";
